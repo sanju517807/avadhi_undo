@@ -1,0 +1,35 @@
+name: Avadhi Undo Alert Check
+
+on:
+  schedule:
+    # Runs every 10 minutes between 00:00 UTC (5:30 AM IST) and 03:00 UTC (8:30 AM IST)
+    - cron: '*/10 0-3 * * *'
+  workflow_dispatch:
+
+jobs:
+  scrape-and-alert:
+    runs-runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Run Scraper
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python scraper.py
+
+      - name: Commit and Push Updated Status
+        run: |
+          git config --global user.name "AvadhiUndoBot"
+          git config --global user.email "bot@avadhiundo.com"
+          git add status.json
+          git commit -m "Auto-update holiday status [skip ci]" || exit 0
+          git push
