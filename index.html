@@ -40,6 +40,11 @@
       </div>
     </div>
 
+    <!-- Real-time Clock -->
+    <div class="text-center text-sm text-slate-400">
+      <span id="realTimeClock">--:--:--</span>
+    </div>
+
     <!-- Civic Strips (Power & Waterlogging) -->
     <div class="space-y-2">
       <div class="bg-slate-800/50 border border-slate-800 p-3 rounded-xl flex items-center justify-between">
@@ -64,7 +69,7 @@
     </div>
 
     <!-- Telegram Push Notification CTA -->
-    <a id="telegramBtn" href="https://t.me/your_channel_here" target="_blank" class="block w-full text-center bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold py-3 rounded-xl shadow-lg transition-transform active:scale-95">
+    <a id="telegramBtn" href="https://t.me/avadhi_undo" target="_blank" class="block w-full text-center bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold py-3 rounded-xl shadow-lg transition-colors">
       📲 Get Instant Telegram 6:00 AM Alerts
     </a>
 
@@ -79,9 +84,24 @@
   <script>
     const DATA_URL = "status.json";
 
+    // Real-time clock update
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      document.getElementById("realTimeClock").innerText = timeStr;
+    }
+
+    // Update clock immediately and every second
+    updateClock();
+    setInterval(updateClock, 1000);
+
     async function loadStatus() {
       try {
-        const res = await fetch(DATA_URL + "?t=" + new Date().getTime());
+        // Add cache-busting query parameter
+        const cacheBreaker = new Date().getTime();
+        const res = await fetch(`${DATA_URL}?t=${cacheBreaker}`, { 
+          cache: 'no-store' 
+        });
         const data = await res.json();
         
         const card = document.getElementById("statusCard");
