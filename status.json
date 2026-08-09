@@ -1,0 +1,15 @@
+{
+  "last_updated": "2026-08-09T17:00:00Z",
+  "district": "Ernakulam",
+  "holiday": {
+    "active": false,
+    "title": "No official holiday declared yet for schools and colleges.",
+    "source_url": ""
+  },
+  "waterlogging": {
+    "title": "Normal traffic flow across major junctions."
+  },
+  "power_cut": {
+    "title": "No major grid maintenance scheduled."
+  }
+}
