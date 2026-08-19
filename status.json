@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-19T00:00:00Z",
+  "last_updated": "2026-08-19T13:13:00.781209+05:30",
   "generated_by": "avadhi-undo-scraper",
   "default_district": "ernakulam",
   "districts": {
@@ -13,49 +13,139 @@
         "target_date": ""
       },
       "institutions": {
-        "schools": {"status": "unknown", "title": "No verified closure order found."},
-        "colleges": {"status": "unknown", "title": "No verified closure order found."},
-        "government_offices": {"status": "unknown", "title": "No verified closure order found."},
-        "other_institutions": {"status": "unknown", "title": "No verified closure order found."}
+        "schools": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        },
+        "colleges": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        },
+        "government_offices": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        },
+        "other_institutions": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        }
       },
-      "waterlogging": {"status": "unknown", "title": "No verified live waterlogging report yet."},
-      "power_cut": {"status": "unknown", "title": "No verified live power disruption report yet."}
+      "waterlogging": {
+        "status": "unknown",
+        "title": "No verified live waterlogging report yet."
+      },
+      "power_cut": {
+        "status": "unknown",
+        "title": "No verified live power disruption report yet."
+      }
     },
     "trivandrum": {
       "name": "Thiruvananthapuram",
-      "holiday": {"status": "unknown", "title": "No verified holiday order found yet.", "source_url": "", "published_at": "", "target_date": ""},
-      "institutions": {
-        "schools": {"status": "unknown", "title": "No verified closure order found."},
-        "colleges": {"status": "unknown", "title": "No verified closure order found."},
-        "government_offices": {"status": "unknown", "title": "No verified closure order found."},
-        "other_institutions": {"status": "unknown", "title": "No verified closure order found."}
+      "holiday": {
+        "status": "unknown",
+        "title": "No verified holiday order found yet.",
+        "source_url": "",
+        "published_at": "",
+        "target_date": ""
       },
-      "waterlogging": {"status": "unknown", "title": "No verified live waterlogging report yet."},
-      "power_cut": {"status": "unknown", "title": "No verified live power disruption report yet."}
+      "institutions": {
+        "schools": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        },
+        "colleges": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        },
+        "government_offices": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        },
+        "other_institutions": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        }
+      },
+      "waterlogging": {
+        "status": "unknown",
+        "title": "No verified live waterlogging report yet."
+      },
+      "power_cut": {
+        "status": "unknown",
+        "title": "No verified live power disruption report yet."
+      }
     },
     "thrissur": {
       "name": "Thrissur",
-      "holiday": {"status": "unknown", "title": "No verified holiday order found yet.", "source_url": "", "published_at": "", "target_date": ""},
-      "institutions": {
-        "schools": {"status": "unknown", "title": "No verified closure order found."},
-        "colleges": {"status": "unknown", "title": "No verified closure order found."},
-        "government_offices": {"status": "unknown", "title": "No verified closure order found."},
-        "other_institutions": {"status": "unknown", "title": "No verified closure order found."}
+      "holiday": {
+        "status": "unknown",
+        "title": "No verified holiday order found yet.",
+        "source_url": "",
+        "published_at": "",
+        "target_date": ""
       },
-      "waterlogging": {"status": "unknown", "title": "No verified live waterlogging report yet."},
-      "power_cut": {"status": "unknown", "title": "No verified live power disruption report yet."}
+      "institutions": {
+        "schools": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        },
+        "colleges": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        },
+        "government_offices": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        },
+        "other_institutions": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        }
+      },
+      "waterlogging": {
+        "status": "unknown",
+        "title": "No verified live waterlogging report yet."
+      },
+      "power_cut": {
+        "status": "unknown",
+        "title": "No verified live power disruption report yet."
+      }
     },
     "kozhikode": {
       "name": "Kozhikode",
-      "holiday": {"status": "unknown", "title": "No verified holiday order found yet.", "source_url": "", "published_at": "", "target_date": ""},
-      "institutions": {
-        "schools": {"status": "unknown", "title": "No verified closure order found."},
-        "colleges": {"status": "unknown", "title": "No verified closure order found."},
-        "government_offices": {"status": "unknown", "title": "No verified closure order found."},
-        "other_institutions": {"status": "unknown", "title": "No verified closure order found."}
+      "holiday": {
+        "status": "unknown",
+        "title": "No verified holiday order found yet.",
+        "source_url": "",
+        "published_at": "",
+        "target_date": ""
       },
-      "waterlogging": {"status": "unknown", "title": "No verified live waterlogging report yet."},
-      "power_cut": {"status": "unknown", "title": "No verified live power disruption report yet."}
+      "institutions": {
+        "schools": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        },
+        "colleges": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        },
+        "government_offices": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        },
+        "other_institutions": {
+          "status": "unknown",
+          "title": "No verified closure order found."
+        }
+      },
+      "waterlogging": {
+        "status": "unknown",
+        "title": "No verified live waterlogging report yet."
+      },
+      "power_cut": {
+        "status": "unknown",
+        "title": "No verified live power disruption report yet."
+      }
     }
   }
 }
