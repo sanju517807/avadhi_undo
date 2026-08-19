@@ -5,6 +5,12 @@ on:
     # Every 10 minutes from 05:30 to 08:30 IST.
     - cron: '*/10 0-3 * * *'
   workflow_dispatch:
+    inputs:
+      telegram_test:
+        description: 'Send a one-time Telegram integration test to @avadhiundo'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -41,6 +47,22 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: python scraper.py
+
+      - name: Test Telegram Integration
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.telegram_test == true }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ]; then
+            echo "ERROR: TELEGRAM_BOT_TOKEN secret is missing."
+            exit 1
+          fi
+          response=$(curl --fail --silent --show-error \
+            --request POST \
+            --data-urlencode "chat_id=@avadhiundo" \
+            --data-urlencode "text=🧪 AVADHI UNDO — Telegram integration test\n\nGitHub Actions successfully reached the Telegram Bot API.\nTime: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage")
+          echo "$response" | python -c 'import json,sys; data=json.load(sys.stdin); assert data.get("ok") is True, data; print("Telegram API accepted the test message.")'
 
       - name: Commit & Push Updated Data
         run: |
