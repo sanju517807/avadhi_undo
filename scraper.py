@@ -1,11 +1,11 @@
 """Avadhi Undo MVP scraper.
 
-Reads official Kerala I&PRD press releases, identifies recent district-level
-holiday notices, updates status.json, and optionally sends a Telegram alert.
+Reads official Kerala I&PRD press releases, identifies current holiday notices,
+updates status.json, and optionally sends a Telegram alert.
 
 The scraper is deliberately conservative: it only marks a holiday ACTIVE when
-an official-looking holiday notice names a supported district and contains an
-explicit target date matching today. Unknown cases are never guessed as active.
+an official-looking holiday notice contains an explicit target date matching
+today. Unknown cases are never guessed as active.
 """
 
 from __future__ import annotations
@@ -38,6 +38,11 @@ DISTRICT_ALIASES = {
 HOLIDAY_TERMS = [
     "അവധി", "holiday", "closed", "closure", "വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക്",
     "വിദ്യാഭ്യാസ സ്ഥാപനങ്ങള്‍ക്ക്", "ഓഫീസുകൾക്കും അവധി", "ഓഫീസുകള്‍ക്കും അവധി",
+]
+
+STATEWIDE_TERMS = [
+    "statewide", "state wide", "സംസ്ഥാനത്ത്", "സംസ്ഥാനത്തെ", "സംസ്ഥാന സർക്കാർ",
+    "സംസ്ഥാന സര്‍ക്കാര്‍", "all government offices", "എല്ലാ സർക്കാർ ഓഫീസ", "എല്ലാ സര്‍ക്കാര്‍ ഓഫീസ",
 ]
 
 INSTITUTION_TERMS = {
@@ -106,20 +111,10 @@ def parse_target_date(text: str, today: date) -> date | None:
     lowered = normalize(text)
     dates = numeric_dates(text)
 
-    # Explicit "tomorrow" wording should win over a page's publication date.
     if any(word in lowered for word in ("tomorrow", "നാളെ")):
-        tomorrow = today + timedelta(days=1)
-        if tomorrow in dates:
-            return tomorrow
-        return tomorrow
-
-    # Likewise, an explicit "today" notice should win.
+        return today + timedelta(days=1)
     if any(word in lowered for word in ("today", "ഇന്ന്")):
-        if today in dates:
-            return today
         return today
-
-    # Otherwise accept an explicit date only when it is today.
     if today in dates:
         return today
     return None
@@ -128,6 +123,11 @@ def parse_target_date(text: str, today: date) -> date | None:
 def looks_like_holiday(text: str) -> bool:
     lowered = normalize(text)
     return any(term in lowered for term in HOLIDAY_TERMS)
+
+
+def is_statewide(text: str) -> bool:
+    lowered = normalize(text)
+    return any(term in lowered for term in STATEWIDE_TERMS)
 
 
 def fetch(url: str) -> str:
@@ -174,12 +174,13 @@ def inspect_article(article: dict[str, str], today: date) -> dict[str, Any] | No
     if not looks_like_holiday(combined):
         return None
 
-    district = detect_district(combined)
-    if not district:
-        return None
-
     target_date = parse_target_date(combined, today)
     if target_date != today:
+        return None
+
+    district = detect_district(combined)
+    statewide = is_statewide(combined)
+    if not district and not statewide:
         return None
 
     institutions = detect_institutions(combined)
@@ -188,6 +189,7 @@ def inspect_article(article: dict[str, str], today: date) -> dict[str, Any] | No
 
     return {
         "district": district,
+        "statewide": statewide,
         "institutions": sorted(institutions),
         "title": article["title"],
         "source_url": article["url"],
@@ -198,6 +200,21 @@ def inspect_article(article: dict[str, str], today: date) -> dict[str, Any] | No
 
 def empty_institution() -> dict[str, str]:
     return {"status": "unknown", "title": "No verified closure order found."}
+
+
+def set_active(district: dict[str, Any], finding: dict[str, Any]) -> None:
+    district["holiday"] = {
+        "status": "active",
+        "title": finding["title"],
+        "source_url": finding["source_url"],
+        "published_at": finding["published_at"],
+        "target_date": finding["target_date"],
+    }
+    for institution in finding["institutions"]:
+        district["institutions"][institution] = {
+            "status": "active",
+            "title": finding["title"],
+        }
 
 
 def update_status(data: dict[str, Any], findings: list[dict[str, Any]], timestamp: str) -> None:
@@ -213,27 +230,20 @@ def update_status(data: dict[str, Any], findings: list[dict[str, Any]], timestam
             district.setdefault("institutions", {})[key] = empty_institution()
 
     for finding in findings:
-        district = data["districts"][finding["district"]]
-        district["holiday"] = {
-            "status": "active",
-            "title": finding["title"],
-            "source_url": finding["source_url"],
-            "published_at": finding["published_at"],
-            "target_date": finding["target_date"],
-        }
-        for institution in finding["institutions"]:
-            district["institutions"][institution] = {
-                "status": "active",
-                "title": finding["title"],
-            }
+        if finding["statewide"]:
+            for district in data.get("districts", {}).values():
+                set_active(district, finding)
+        elif finding["district"] in data.get("districts", {}):
+            set_active(data["districts"][finding["district"]], finding)
 
     data["last_updated"] = timestamp
     data.pop("source_error", None)
 
 
 def send_telegram_alert(finding: dict[str, Any], token: str, channel: str) -> None:
+    scope = "Kerala" if finding["statewide"] else finding["district"].title()
     message = (
-        f"🔴 AVADHI UNDO — {finding['district'].title()}\n\n"
+        f"🔴 AVADHI UNDO — {scope}\n\n"
         f"{finding['title']}\n\n"
         f"📅 Effective: {finding['target_date']}\n"
         f"🔗 Official source: {finding['source_url']}"
@@ -264,7 +274,7 @@ def main() -> None:
             if finding:
                 findings.append(finding)
 
-        unique = {(item["district"], item["source_url"]): item for item in findings}
+        unique = {(item["statewide"], item["district"], item["source_url"]): item for item in findings}
         findings = list(unique.values())
         print(f"Holiday findings for {today}: {len(findings)}")
 
@@ -276,17 +286,24 @@ def main() -> None:
         channel = config.get("telegram", {}).get("channel", "@avadhiundo")
 
         for finding in findings:
-            old = previous.get(finding["district"], {}).get("holiday", {})
-            was_active = old.get("status") == "active" and old.get("source_url") == finding["source_url"]
-            if token and config.get("telegram", {}).get("enabled", True) and not was_active:
+            if finding["statewide"]:
+                already_sent = all(
+                    district.get("holiday", {}).get("status") == "active"
+                    and district.get("holiday", {}).get("source_url") == finding["source_url"]
+                    for district in previous.values()
+                )
+            else:
+                old = previous.get(finding["district"], {}).get("holiday", {})
+                already_sent = old.get("status") == "active" and old.get("source_url") == finding["source_url"]
+
+            if token and config.get("telegram", {}).get("enabled", True) and not already_sent:
                 try:
                     send_telegram_alert(finding, token, channel)
-                    print(f"Telegram alert sent for {finding['district']}")
+                    print(f"Telegram alert sent for {finding.get('district') or 'statewide'}")
                 except requests.RequestException as exc:
                     print(f"Telegram alert failed: {exc}")
 
     except requests.RequestException as exc:
-        # Keep the last known state if the official source is temporarily down.
         status["last_updated"] = timestamp
         status["source_error"] = str(exc)
         save_json(STATUS_PATH, status)
