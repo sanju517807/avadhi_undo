@@ -3,136 +3,200 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Avadhi Undo? | Live District Alerts Kerala</title>
+  <meta name="description" content="Avadhi Undo — live Kerala district holiday and civic alerts.">
+  <title>Avadhi Undo? | Kerala Live Alerts</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between font-sans">
-
-  <!-- Header -->
-  <header class="p-4 border-b border-slate-800 text-center bg-slate-950/50 backdrop-blur">
-    <h1 class="text-2xl font-black tracking-wider text-amber-400">AVADHI UNDO?</h1>
-    <p class="text-xs text-slate-400 mt-1">Live School Holiday & Civic Alert Tracker</p>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+  <header class="border-b border-slate-800 bg-slate-950/95 sticky top-0 z-10 backdrop-blur">
+    <div class="max-w-3xl mx-auto px-4 py-5 text-center">
+      <div class="text-3xl font-black tracking-tight text-amber-400">AVADHI UNDO?</div>
+      <p class="text-sm text-slate-400 mt-1">Live Kerala holiday & civic alert tracker</p>
+      <p id="liveClock" class="text-xs text-amber-300/80 font-mono mt-2">Loading Kerala time...</p>
+    </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="max-w-md w-full mx-auto p-4 flex-grow flex flex-col justify-center gap-4">
-    
-    <!-- District Picker -->
-    <div class="flex justify-between items-center bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-      <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">District:</span>
-      <select id="districtSelect" class="bg-slate-900 text-amber-400 font-bold px-3 py-1 rounded-lg border border-slate-700 focus:outline-none">
-        <option value="ernakulam" selected>Ernakulam (Kochi)</option>
-        <option value="trivandrum">Trivandrum</option>
-        <option value="thrissur">Thrissur</option>
-        <option value="kozhikode">Kozhikode</option>
-      </select>
-    </div>
+  <main class="max-w-3xl mx-auto px-4 py-6 space-y-5">
+    <section class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">District</span>
+        <select id="districtSelect" class="mt-2 w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-3 text-amber-300 font-bold focus:outline-none">
+          <option value="ernakulam">Ernakulam (Kochi)</option>
+          <option value="trivandrum">Thiruvananthapuram</option>
+          <option value="thrissur">Thrissur</option>
+          <option value="kozhikode">Kozhikode</option>
+        </select>
+      </label>
 
-    <!-- Main Hero Status Box -->
-    <div id="statusCard" class="bg-slate-800 border-2 border-slate-700 rounded-2xl p-6 text-center shadow-xl transition-all">
-      <span class="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1 bg-slate-700 text-slate-300 rounded-full mb-3">Status Today</span>
-      <h2 id="statusText" class="text-3xl font-extrabold text-slate-300 mb-2">CHECKING...</h2>
-      <p id="statusDesc" class="text-sm text-slate-400">Fetching live status from collectorate feeds...</p>
-      
-      <div class="mt-4 pt-4 border-t border-slate-700/50 flex justify-between text-xs text-slate-500">
-        <span>Last Checked:</span>
-        <span id="lastUpdated">--:--</span>
+      <label class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Institution</span>
+        <select id="institutionSelect" class="mt-2 w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-3 text-amber-300 font-bold focus:outline-none">
+          <option value="schools">Schools</option>
+          <option value="colleges">Colleges</option>
+          <option value="government_offices">Government Offices</option>
+          <option value="other_institutions">Other Institutions</option>
+        </select>
+      </label>
+    </section>
+
+    <section id="statusCard" class="rounded-3xl border-2 border-slate-700 bg-slate-900 p-7 shadow-2xl transition-all">
+      <div class="text-center">
+        <span id="statusBadge" class="inline-flex px-3 py-1 rounded-full bg-slate-800 text-slate-400 text-xs font-bold uppercase tracking-widest">Checking</span>
+        <h1 id="statusText" class="text-4xl sm:text-5xl font-black mt-4">CHECKING...</h1>
+        <p id="statusDesc" class="text-slate-400 mt-3 max-w-xl mx-auto">Checking official Kerala sources...</p>
       </div>
-    </div>
 
-    <!-- Real-time Clock -->
-    <div class="text-center text-sm text-slate-400">
-      <span id="realTimeClock">--:--:--</span>
-    </div>
-
-    <!-- Civic Strips (Power & Waterlogging) -->
-    <div class="space-y-2">
-      <div class="bg-slate-800/50 border border-slate-800 p-3 rounded-xl flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <span class="text-xl">🌊</span>
-          <div>
-            <h4 class="text-xs font-bold text-slate-300">Waterlogging / Flooding</h4>
-            <p id="floodStatus" class="text-xs text-slate-400">Normal traffic flow across major roads.</p>
-          </div>
+      <div class="mt-6 pt-5 border-t border-slate-800 grid grid-cols-2 gap-4 text-xs">
+        <div>
+          <div class="text-slate-500 uppercase tracking-wider">Effective date</div>
+          <div id="effectiveDate" class="text-slate-200 font-semibold mt-1">—</div>
+        </div>
+        <div class="text-right">
+          <div class="text-slate-500 uppercase tracking-wider">Last checked</div>
+          <div id="lastUpdated" class="text-slate-200 font-semibold mt-1">—</div>
         </div>
       </div>
 
-      <div class="bg-slate-800/50 border border-slate-800 p-3 rounded-xl flex items-center justify-between">
+      <a id="sourceLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden mt-5 text-center text-sm text-sky-400 hover:text-sky-300">View official source →</a>
+    </section>
+
+    <section class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <article class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
         <div class="flex items-center gap-3">
-          <span class="text-xl">⚡</span>
+          <span class="text-2xl">🌧️</span>
           <div>
-            <h4 class="text-xs font-bold text-slate-300">KSEB Outages</h4>
-            <p id="powerStatus" class="text-xs text-slate-400">No major grid disruptions reported.</p>
+            <h2 class="font-bold">Waterlogging / Flooding</h2>
+            <p id="floodStatus" class="text-sm text-slate-400 mt-1">No verified live report yet.</p>
           </div>
         </div>
+      </article>
+
+      <article class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">⚡</span>
+          <div>
+            <h2 class="font-bold">KSEB / Power</h2>
+            <p id="powerStatus" class="text-sm text-slate-400 mt-1">No verified live report yet.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <h2 class="font-bold">📲 Instant alerts</h2>
+          <p class="text-sm text-slate-400 mt-1">Follow the Ernakulam alert channel while the project expands district-by-district.</p>
+        </div>
+        <a href="https://t.me/avadhiundo" target="_blank" rel="noopener noreferrer" class="shrink-0 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-4 py-3 rounded-xl">Telegram</a>
       </div>
-    </div>
+    </section>
 
-    <!-- Telegram Push Notification CTA -->
-    <a id="telegramBtn" href="https://t.me/avadhi_undo" target="_blank" class="block w-full text-center bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold py-3 rounded-xl shadow-lg transition-colors">
-      📲 Get Instant Telegram 6:00 AM Alerts
-    </a>
-
+    <p id="dataNote" class="text-center text-xs text-slate-600">Data is shown as verified, unknown, or active. Unknown means the system has not verified an official notice yet.</p>
   </main>
 
-  <!-- Footer -->
-  <footer class="p-4 text-center text-xs text-slate-600 border-t border-slate-900">
-    Avadhi Undo Project • Open Source Civic Tech
+  <footer class="max-w-3xl mx-auto px-4 py-8 text-center text-xs text-slate-600">
+    Avadhi Undo • Kerala civic-tech project
   </footer>
 
-  <!-- Script to Fetch Status -->
   <script>
     const DATA_URL = "status.json";
+    const districtSelect = document.getElementById("districtSelect");
+    const institutionSelect = document.getElementById("institutionSelect");
+    let statusData = null;
 
-    // Real-time clock update
     function updateClock() {
       const now = new Date();
-      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      document.getElementById("realTimeClock").innerText = timeStr;
+      const formatted = now.toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+      });
+      document.getElementById("liveClock").textContent = formatted + " IST";
     }
 
-    // Update clock immediately and every second
-    updateClock();
-    setInterval(updateClock, 1000);
+    function render() {
+      if (!statusData) return;
+      const district = districtSelect.value;
+      const institution = institutionSelect.value;
+      const data = statusData.districts?.[district];
+      if (!data) return;
+
+      const holiday = data.holiday || {};
+      const institutionStatus = data.institutions?.[institution] || {};
+      const card = document.getElementById("statusCard");
+      const badge = document.getElementById("statusBadge");
+      const text = document.getElementById("statusText");
+      const desc = document.getElementById("statusDesc");
+      const source = document.getElementById("sourceLink");
+
+      card.className = "rounded-3xl border-2 p-7 shadow-2xl transition-all";
+      source.classList.add("hidden");
+
+      if (holiday.status === "active" && institutionStatus.status === "active") {
+        card.classList.add("bg-emerald-950/70", "border-emerald-500");
+        badge.className = "inline-flex px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-widest";
+        badge.textContent = "Verified active";
+        text.className = "text-4xl sm:text-5xl font-black mt-4 text-emerald-400";
+        text.textContent = "HOLIDAY DECLARED";
+        desc.textContent = institutionStatus.title || holiday.title;
+        if (holiday.source_url) {
+          source.href = holiday.source_url;
+          source.classList.remove("hidden");
+        }
+      } else if (holiday.status === "active") {
+        card.classList.add("bg-amber-950/50", "border-amber-500");
+        badge.className = "inline-flex px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold uppercase tracking-widest";
+        badge.textContent = "Verified holiday notice";
+        text.className = "text-4xl sm:text-5xl font-black mt-4 text-amber-300";
+        text.textContent = "HOLIDAY NOTICE";
+        desc.textContent = "An official holiday notice was found, but it does not currently confirm closure for the selected institution.";
+        if (holiday.source_url) {
+          source.href = holiday.source_url;
+          source.classList.remove("hidden");
+        }
+      } else {
+        card.classList.add("bg-slate-900", "border-slate-700");
+        badge.className = "inline-flex px-3 py-1 rounded-full bg-slate-800 text-slate-400 text-xs font-bold uppercase tracking-widest";
+        badge.textContent = "No verified order";
+        text.className = "text-4xl sm:text-5xl font-black mt-4 text-slate-200";
+        text.textContent = "NO HOLIDAY VERIFIED";
+        desc.textContent = institutionStatus.title || holiday.title || "No official closure order has been verified yet.";
+      }
+
+      document.getElementById("effectiveDate").textContent = holiday.target_date || "—";
+      document.getElementById("lastUpdated").textContent = statusData.last_updated
+        ? new Date(statusData.last_updated).toLocaleString("en-IN", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", day: "2-digit", month: "short" }) + " IST"
+        : "—";
+      document.getElementById("floodStatus").textContent = data.waterlogging?.title || "No verified live report yet.";
+      document.getElementById("powerStatus").textContent = data.power_cut?.title || "No verified live report yet.";
+    }
 
     async function loadStatus() {
       try {
-        // Add cache-busting query parameter
-        const cacheBreaker = new Date().getTime();
-        const res = await fetch(`${DATA_URL}?t=${cacheBreaker}`, { 
-          cache: 'no-store' 
-        });
-        const data = await res.json();
-        
-        const card = document.getElementById("statusCard");
-        const text = document.getElementById("statusText");
-        const desc = document.getElementById("statusDesc");
-        const updated = document.getElementById("lastUpdated");
-        
-        updated.innerText = new Date(data.last_updated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        if (data.holiday.active) {
-          card.className = "bg-emerald-950/80 border-2 border-emerald-500 rounded-2xl p-6 text-center shadow-xl";
-          text.innerText = "HOLIDAY DECLARED!";
-          text.className = "text-3xl font-extrabold text-emerald-400 mb-2";
-          desc.innerText = data.holiday.title;
-        } else {
-          card.className = "bg-slate-800 border-2 border-slate-700 rounded-2xl p-6 text-center shadow-xl";
-          text.innerText = "NO HOLIDAY YET";
-          text.className = "text-3xl font-extrabold text-slate-200 mb-2";
-          desc.innerText = data.holiday.title || "No official closure order issued.";
-        }
-
-        if(data.waterlogging) document.getElementById("floodStatus").innerText = data.waterlogging.title;
-        if(data.power_cut) document.getElementById("powerStatus").innerText = data.power_cut.title;
-
-      } catch (err) {
-        console.error("Failed to load status:", err);
+        const response = await fetch(DATA_URL + "?t=" + Date.now(), { cache: "no-store" });
+        if (!response.ok) throw new Error("status.json returned " + response.status);
+        statusData = await response.json();
+        render();
+      } catch (error) {
+        console.error("Unable to load status:", error);
+        document.getElementById("statusText").textContent = "DATA UNAVAILABLE";
+        document.getElementById("statusDesc").textContent = "The dashboard could not retrieve the latest status data. Please try again shortly.";
       }
     }
 
+    districtSelect.addEventListener("change", render);
+    institutionSelect.addEventListener("change", render);
+    updateClock();
+    setInterval(updateClock, 1000);
     loadStatus();
-    setInterval(loadStatus, 30000); // Reload every 30 seconds
+    setInterval(loadStatus, 30000);
   </script>
 </body>
 </html>
