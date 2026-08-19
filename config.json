@@ -1,0 +1,68 @@
+{
+  "project": {
+    "name": "Avadhi Undo",
+    "timezone": "Asia/Kolkata",
+    "default_district": "ernakulam"
+  },
+  "districts": {
+    "ernakulam": {
+      "name": "Ernakulam",
+      "display_name": "Ernakulam (Kochi)",
+      "enabled": true
+    },
+    "trivandrum": {
+      "name": "Thiruvananthapuram",
+      "display_name": "Thiruvananthapuram",
+      "enabled": true
+    },
+    "thrissur": {
+      "name": "Thrissur",
+      "display_name": "Thrissur",
+      "enabled": true
+    },
+    "kozhikode": {
+      "name": "Kozhikode",
+      "display_name": "Kozhikode",
+      "enabled": true
+    }
+  },
+  "institutions": [
+    {
+      "id": "schools",
+      "label": "Schools",
+      "enabled": true,
+      "scope": "district"
+    },
+    {
+      "id": "colleges",
+      "label": "Colleges",
+      "enabled": true,
+      "scope": "district"
+    },
+    {
+      "id": "government_offices",
+      "label": "Government Offices",
+      "enabled": true,
+      "scope": "district"
+    },
+    {
+      "id": "other_institutions",
+      "label": "Other Institutions",
+      "enabled": true,
+      "scope": "district"
+    }
+  ],
+  "sources": [
+    {
+      "id": "prd_kerala",
+      "name": "Kerala PRD",
+      "url": "https://prd.kerala.gov.in/ml/press-release",
+      "enabled": true,
+      "kind": "html"
+    }
+  ],
+  "telegram": {
+    "channel": "@avadhiundo",
+    "enabled": true
+  }
+}
