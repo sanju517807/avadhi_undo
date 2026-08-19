@@ -3,9 +3,9 @@
 Reads official Kerala I&PRD press releases, identifies recent district-level
 holiday notices, updates status.json, and optionally sends a Telegram alert.
 
-This is intentionally conservative: an article must look like an actual
-holiday/closure notice and its target date must be today before it is marked
-ACTIVE. Unknown cases remain UNKNOWN rather than being guessed as a holiday.
+The scraper is deliberately conservative: it only marks a holiday ACTIVE when
+an official-looking holiday notice names a supported district and contains an
+explicit target date matching today. Unknown cases are never guessed as active.
 """
 
 from __future__ import annotations
@@ -45,9 +45,6 @@ INSTITUTION_TERMS = {
     "colleges": ["college", "colleges", "കോളേജ്", "പ്രൊഫഷണൽ കോളേജ്", "പ്രൊഫഷണല്‍ കോളേജ്"],
     "government_offices": ["government office", "government offices", "സർക്കാർ ഓഫീസ", "സര്‍ക്കാര്‍ ഓഫീസ"],
 }
-
-TODAY_WORDS = ["today", "ഇന്ന്"]
-TOMORROW_WORDS = ["tomorrow", "നാളെ"]
 
 
 def now_ist() -> datetime:
@@ -90,23 +87,41 @@ def detect_institutions(text: str) -> set[str]:
     return found
 
 
-def parse_target_date(text: str, today: date) -> date | None:
-    # Handles common numeric forms such as 01/07/26, 01/07/2026 and
-    # 01-07-26. These occur frequently in official holiday notices.
+def numeric_dates(text: str) -> list[date]:
+    found: list[date] = []
     for match in re.findall(r"\b(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})\b", text):
         day, month, year = map(int, match)
         if year < 100:
             year += 2000
         try:
-            return date(year, month, day)
+            value = date(year, month, day)
         except ValueError:
             continue
+        if value not in found:
+            found.append(value)
+    return found
 
+
+def parse_target_date(text: str, today: date) -> date | None:
     lowered = normalize(text)
-    if any(word in lowered for word in TODAY_WORDS):
+    dates = numeric_dates(text)
+
+    # Explicit "tomorrow" wording should win over a page's publication date.
+    if any(word in lowered for word in ("tomorrow", "നാളെ")):
+        tomorrow = today + timedelta(days=1)
+        if tomorrow in dates:
+            return tomorrow
+        return tomorrow
+
+    # Likewise, an explicit "today" notice should win.
+    if any(word in lowered for word in ("today", "ഇന്ന്")):
+        if today in dates:
+            return today
         return today
-    if any(word in lowered for word in TOMORROW_WORDS):
-        return today + timedelta(days=1)
+
+    # Otherwise accept an explicit date only when it is today.
+    if today in dates:
+        return today
     return None
 
 
@@ -135,9 +150,7 @@ def collect_recent_prd_articles() -> list[dict[str, str]]:
     for link in soup.find_all("a", href=True):
         title = link.get_text(" ", strip=True)
         href = urljoin(PRD_URL, link["href"])
-        if not title or href in seen:
-            continue
-        if "/node/" not in href:
+        if not title or href in seen or "/node/" not in href:
             continue
         seen.add(href)
         articles.append({"title": title, "url": href})
@@ -215,6 +228,7 @@ def update_status(data: dict[str, Any], findings: list[dict[str, Any]], timestam
             }
 
     data["last_updated"] = timestamp
+    data.pop("source_error", None)
 
 
 def send_telegram_alert(finding: dict[str, Any], token: str, channel: str) -> None:
@@ -244,13 +258,12 @@ def main() -> None:
 
     try:
         candidates = collect_recent_prd_articles()
-        findings = []
+        findings: list[dict[str, Any]] = []
         for article in candidates:
             finding = inspect_article(article, today)
             if finding:
                 findings.append(finding)
 
-        # De-duplicate by district + source URL.
         unique = {(item["district"], item["source_url"]): item for item in findings}
         findings = list(unique.values())
         print(f"Holiday findings for {today}: {len(findings)}")
