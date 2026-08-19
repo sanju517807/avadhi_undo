@@ -11,15 +11,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
       - name: Install Dependencies
         run: pip install requests beautifulsoup4
+
+      - name: Verify scraper exists
+        run: |
+          echo "Repository files:"
+          find . -maxdepth 3 -type f | sort
+          test -f scraper.py || { echo "ERROR: scraper.py not found at repository root"; exit 1; }
 
       - name: Run Scraper
         env:
