@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-22T06:51:21.890112+05:30",
+  "last_updated": "2026-08-22T08:06:03.042781+05:30",
   "generated_by": "avadhi-undo-scraper",
   "default_district": "ernakulam",
   "districts": {
@@ -148,5 +148,5 @@
       }
     }
   },
-  "source_error": "HTTPSConnectionPool(host='prd.kerala.gov.in', port=443): Max retries exceeded with url: /ml/pressrelease (Caused by ConnectTimeoutError(<HTTPSConnection(host='prd.kerala.gov.in', port=443) at 0x7fa220da6ed0>, 'Connection to prd.kerala.gov.in timed out. (connect timeout=20)'))"
+  "source_error": "HTTPSConnectionPool(host='prd.kerala.gov.in', port=443): Max retries exceeded with url: /ml/pressrelease (Caused by ConnectTimeoutError(<HTTPSConnection(host='prd.kerala.gov.in', port=443) at 0x7ff18801ea10>, 'Connection to prd.kerala.gov.in timed out. (connect timeout=20)'))"
 }
