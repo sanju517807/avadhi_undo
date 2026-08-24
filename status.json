@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-24T06:56:15.974991+05:30",
+  "last_updated": "2026-08-24T08:17:51.509853+05:30",
   "generated_by": "avadhi-undo-scraper",
   "default_district": "ernakulam",
   "districts": {
@@ -147,6 +147,5 @@
         "title": "No verified live power disruption report yet."
       }
     }
-  },
-  "source_error": "HTTPSConnectionPool(host='prd.kerala.gov.in', port=443): Max retries exceeded with url: /ml/pressrelease (Caused by ConnectTimeoutError(<HTTPSConnection(host='prd.kerala.gov.in', port=443) at 0x7fed987f9490>, 'Connection to prd.kerala.gov.in timed out. (connect timeout=20)'))"
+  }
 }
