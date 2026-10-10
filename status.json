@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-09T10:43:35.845671+05:30",
+  "last_updated": "2026-10-10T10:28:43.742235+05:30",
   "generated_by": "avadhi-undo-scraper",
   "default_district": "ernakulam",
   "districts": {
@@ -147,6 +147,5 @@
         "title": "No verified live power disruption report yet."
       }
     }
-  },
-  "source_error": "HTTPSConnectionPool(host='prd.kerala.gov.in', port=443): Read timed out. (read timeout=20)"
+  }
 }
