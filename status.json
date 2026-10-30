@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-29T10:25:22.121433+05:30",
+  "last_updated": "2026-10-30T10:24:59.482001+05:30",
   "generated_by": "avadhi-undo-scraper",
   "default_district": "ernakulam",
   "districts": {
@@ -147,5 +147,6 @@
         "title": "No verified live power disruption report yet."
       }
     }
-  }
+  },
+  "source_error": "500 Server Error: 500 Service unavailable (with message) for url: https://prd.kerala.gov.in/ml/pressrelease"
 }
